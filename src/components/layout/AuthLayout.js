@@ -9,7 +9,48 @@ import { FaDiscord, FaSlack, FaDropbox, FaSquare, FaIntercom } from 'react-icons
  * Refined Professional Design "CampusPulse"
  * Split screen: Left (Form), Right (Branding & Testimonials)
  */
-const AuthLayout = ({ children, title, subtitle }) => {
+const brandingData = {
+    'student': {
+        title: "Your Campus Life, Simplified.",
+        quote: "CampusPulse makes it so easy to check mess menus and raise complaints. I feel much more connected to the campus administration.",
+        author: "Priya Sharma",
+        role: "Final Year Student",
+        stats: "Students"
+    },
+    'super-admin': {
+        title: "Empower Your Institution with Data.",
+        quote: "Real-time analytics and centralized control over all hostel branches have improved our administrative efficiency by 40%.",
+        author: "Dr. R.K. Gupta",
+        role: "Dean of Administration",
+        stats: "Administrators"
+    },
+    'hostel-admin': {
+        title: "Efficient Hostel Operations.",
+        quote: "Tracking room allocation, student attendance, and maintenance requests has never been smoother. A true lifesaver for wardens.",
+        author: "Suresh Patil",
+        role: "Senior Warden",
+        stats: "Wardens"
+    },
+    'mess-admin': {
+        title: "Streamlining Food Management.",
+        quote: "Inventory tracking and daily student feedback help us maintain high food quality and significantly reduce waste.",
+        author: "Chef Anjali",
+        role: "Head of Mess",
+        stats: "Mess Staff"
+    },
+    'default': {
+        title: "Revolutionize Campus Life with Smarter Management.",
+        quote: "CampusPulse has completely transformed our hostel management. It’s reliable, efficient, and ensures our students feel safe and connected.",
+        author: "Rajesh Kumar",
+        role: "Dean of Student Affairs",
+        stats: "Users"
+    }
+};
+
+const AuthLayout = ({ children, title, subtitle, role }) => {
+    // Normalize role if it comes with different casing, though usually lowercase from URL
+    const activeBranding = brandingData[role] || brandingData['default'];
+
     return (
         <div className="auth-layout">
             <div className="auth-left">
@@ -37,19 +78,18 @@ const AuthLayout = ({ children, title, subtitle }) => {
 
             <div className="auth-right">
                 <div className="content-overlay">
-                    <h2>Revolutionize Campus Life with <br /> Smarter Management.</h2>
+                    <h2>{activeBranding.title}</h2>
 
                     <div className="quote-card">
                         <div className="quote-icon">“</div>
-                        <p>
-                            "CampusPulse has completely transformed our hostel management.
-                            It’s reliable, efficient, and ensures our students feel safe and connected."
-                        </p>
+                        <p>"{activeBranding.quote}"</p>
                         <div className="author">
-                            <div className="avatar-circle">RJ</div>
+                            <div className="avatar-circle">
+                                {activeBranding.author.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                            </div>
                             <div className="info">
-                                <strong>Rajesh Kumar</strong>
-                                <span>Dean of Student Affairs</span>
+                                <strong>{activeBranding.author}</strong>
+                                <span>{activeBranding.role}</span>
                             </div>
                         </div>
                     </div>

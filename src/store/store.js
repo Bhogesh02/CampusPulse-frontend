@@ -4,7 +4,7 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 import rootReducer from './rootReducer';
 
 const persistConfig = {
-    key: 'root',
+    key: 'CampusPulse',
     storage,
     whitelist: ['auth'], // Persist auth state
 };

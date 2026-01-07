@@ -1,0 +1,265 @@
+@import './App.css';
+
+.dashboard-container {
+    padding: 1rem;
+    color: #1e293b;
+    font-family: 'Inter', sans-serif;
+    animation: fadeIn 0.5s ease-out;
+
+    .welcome-section {
+        margin-bottom: 2rem;
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            &:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            }
+
+            .content {
+                h3 {
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    margin: 0;
+                    color: #0f172a;
+                }
+
+                p {
+                    margin: 0;
+                    color: #64748b;
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                }
+            }
+
+            .icon-box {
+                width: 48px;
+                height: 48px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+
+                &.blue {
+                    background: #eff6ff;
+                    color: #3b82f6;
+                }
+
+                &.green {
+                    background: #f0fdf4;
+                    color: #22c55e;
+                }
+
+                &.purple {
+                    background: #f5f3ff;
+                    color: #8b5cf6;
+                }
+
+                &.orange {
+                    background: #fff7ed;
+                    color: #f97316;
+                }
+            }
+        }
+    }
+
+    .dashboard-tabs {
+        display: flex;
+        gap: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        padding-bottom: 2px;
+
+        button {
+            border: none;
+            background: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.2s;
+            white-space: nowrap;
+
+            &:hover {
+                color: #0f172a;
+            }
+
+            &.active {
+                color: #2563eb;
+                font-weight: 600;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -3px;
+                    left: 0;
+                    width: 100%;
+                    height: 2px;
+                    background: #2563eb;
+                    border-radius: 2px;
+                }
+            }
+        }
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+
+            h2 {
+                font-size: 1.1rem;
+                font-weight: 600;
+                margin: 0;
+                color: #0f172a;
+            }
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+
+            th {
+                text-align: left;
+                padding: 1rem;
+                background: #f8fafc;
+                color: #64748b;
+                font-size: 0.85rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            td {
+                padding: 1rem;
+                border-bottom: 1px solid #f1f5f9;
+                color: #334155;
+                font-size: 0.95rem;
+
+                &:last-child {
+                    text-align: right;
+                }
+            }
+
+            tr:last-child td {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.badge-success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    &.badge-warning {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+
+    &.badge-danger {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    &.badge-info {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    &.badge-secondary {
+        background: #f1f5f9;
+        color: #475569;
+    }
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #334155;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+
+        &:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    }
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #1d4ed8;
+    }
+}

@@ -6,4 +6,6 @@ export const authEndpoints = {
     registerStudent: (data) => api.post('/auth/register/student', data),
     registerHostelAdmin: (data) => api.post('/auth/register/hostel-admin', data),
     registerMessAdmin: (data) => api.post('/auth/register/mess-admin', data),
+    forgotPassword: (data) => api.post('/auth/forgot-password', data),
+    resetPassword: (token, data) => api.put(`/auth/reset-password/${token}`, data),
 };

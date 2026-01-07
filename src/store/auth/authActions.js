@@ -74,6 +74,30 @@ export const registerMessAdmin = createAsyncThunk(
     }
 );
 
+export const forgotPassword = createAsyncThunk(
+    'auth/forgotPassword',
+    async (email, { rejectWithValue }) => {
+        try {
+            const response = await authEndpoints.forgotPassword({ email });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Failed to send reset email');
+        }
+    }
+);
+
+export const resetPassword = createAsyncThunk(
+    'auth/resetPassword',
+    async ({ token, password }, { rejectWithValue }) => {
+        try {
+            const response = await authEndpoints.resetPassword(token, { password });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Password reset failed');
+        }
+    }
+);
+
 export const logoutUser = createAsyncThunk(
     'auth/logout',
     async (_, { dispatch }) => {

@@ -5,7 +5,9 @@ import {
     registerStudent,
     registerHostelAdmin,
     registerMessAdmin,
-    logoutUser
+    logoutUser,
+    forgotPassword,
+    resetPassword
 } from './authActions';
 
 const initialState = {
@@ -46,10 +48,11 @@ const authSlice = createSlice({
 
         // Logout
         builder.addCase(logoutUser.fulfilled, (state) => {
+            state.loading = false;
             state.userInfo = null;
             state.token = null;
-            state.success = false;
             state.error = null;
+            state.success = false;
         });
 
         // Registration (Generic handler for all types for simplicity)
@@ -71,6 +74,23 @@ const authSlice = createSlice({
                     state.error = payload;
                 });
         });
+
+        // Reset Password (Auto-login on success)
+        builder
+            .addCase(resetPassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(resetPassword.fulfilled, (state, { payload }) => {
+                state.loading = false;
+                state.userInfo = payload;
+                state.token = payload.token;
+                state.success = true;
+            })
+            .addCase(resetPassword.rejected, (state, { payload }) => {
+                state.loading = false;
+                state.error = payload;
+            });
     },
 });
 

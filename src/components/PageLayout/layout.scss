@@ -1,0 +1,40 @@
+@import '../../assets/styles/App.css';
+
+$sidebar-width: 260px;
+$sidebar-width-collapsed: 80px;
+$bg-main: #f8fafc;
+
+.page-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: $bg-main;
+
+    .main-wrapper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-left: $sidebar-width;
+        transition: margin-left 0.3s ease;
+        min-height: 100vh;
+
+        &.sidebar-collapsed {
+            margin-left: $sidebar-width-collapsed;
+        }
+    }
+
+    .page-content {
+        flex: 1;
+        padding: 2rem;
+        overflow-x: hidden;
+    }
+}
+
+// Media query for mobile responsiveness if needed
+@media (max-width: 768px) {
+    .page-layout {
+        .main-wrapper {
+            margin-left: 0 !important; // Collapsed by default text on mobile? 
+            // Better behavior would be overlay, but for now stick to collapsed logic
+        }
+    }
+}

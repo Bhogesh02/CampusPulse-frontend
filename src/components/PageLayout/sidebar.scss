@@ -1,0 +1,131 @@
+@import '../../assets/styles/App.css';
+
+/* Sidebar Variables */
+$sidebar-width: 260px;
+$sidebar-width-collapsed: 80px;
+$sidebar-bg: #fff;
+$sidebar-text: #64748b;
+$sidebar-active-bg: #ecfdf5;
+$sidebar-active-text: #059669;
+$border-color: #e2e8f0;
+
+.sidebar {
+    height: 100vh;
+    width: $sidebar-width;
+    background-color: $sidebar-bg;
+    border-right: 1px solid $border-color;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: width 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
+
+    &.collapsed {
+        width: $sidebar-width-collapsed;
+
+        .logo-section {
+            padding: 1.5rem 0.5rem;
+            justify-content: center;
+
+            span,
+            button {
+                display: none;
+            }
+        }
+
+        .menu-item {
+            justify-content: center;
+            padding: 0.75rem;
+
+            .menu-label {
+                display: none;
+            }
+        }
+    }
+
+    .logo-section {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        padding: 0 1.5rem;
+        border-bottom: 1px solid $border-color;
+        justify-content: space-between;
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.25rem;
+
+            img {
+                width: 32px;
+                height: 32px;
+                object-fit: contain;
+            }
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background: #f1f5f9;
+                color: #64748b;
+            }
+        }
+    }
+
+    .menu-section {
+        flex: 1;
+        padding: 1.5rem 1rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0.75rem 1rem;
+        color: $sidebar-text;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-size: 0.95rem;
+
+        &:hover {
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        &.active {
+            background-color: $sidebar-active-bg;
+            color: $sidebar-active-text;
+        }
+
+        .menu-icon {
+            font-size: 1.25rem;
+            min-width: 24px; // Prevent shrinking
+        }
+    }
+}

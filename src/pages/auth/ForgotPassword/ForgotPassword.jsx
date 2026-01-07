@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import AuthLayout from '../../../components/layout/AuthLayout';
 import { FiMail, FiArrowLeft, FiCheck } from 'react-icons/fi';
 
+import { useDispatch } from 'react-redux';
+import { forgotPassword } from '../../../store/auth/authActions';
+
 const ForgotPassword = () => {
+    const { role } = useParams(); // Get role from URL
+    const dispatch = useDispatch();
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -14,11 +19,10 @@ const ForgotPassword = () => {
         setLoading(true);
         setError(null);
         try {
-            // Simulate API call for now
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await dispatch(forgotPassword(email)).unwrap();
             setSubmitted(true);
         } catch (err) {
-            setError('Failed to send reset link. Please try again.');
+            setError(err || 'Failed to send reset link. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -28,6 +32,7 @@ const ForgotPassword = () => {
         <AuthLayout
             title="Reset Password"
             subtitle={!submitted ? "Enter your email address to receive password reset instructions." : ""}
+            role={role}
         >
             {!submitted ? (
                 <>
@@ -53,7 +58,7 @@ const ForgotPassword = () => {
                         </button>
                     </form>
                     <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-                        <Link to="/select-portal" style={{
+                        <Link to={role ? `/login/${role}` : '/select-portal'} style={{
                             color: '#6b7280',
                             textDecoration: 'none',
                             display: 'inline-flex',
@@ -80,7 +85,7 @@ const ForgotPassword = () => {
                         We have sent a password reset link to <br /><strong>{email}</strong>.
                     </p>
 
-                    <Link to="/select-portal" className="btn-login" style={{
+                    <Link to={role ? `/login/${role}` : '/select-portal'} className="btn-login" style={{
                         display: 'inline-block',
                         width: 'auto',
                         padding: '0.75rem 2rem',
@@ -88,7 +93,7 @@ const ForgotPassword = () => {
                         textDecoration: 'none',
                         lineHeight: '1.5'
                     }}>
-                        Return to Login
+                        Return to Login Portal
                     </Link>
                 </div>
             )}

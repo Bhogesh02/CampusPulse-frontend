@@ -2,15 +2,17 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated, selectUser } from '../store/auth/authSelectors';
-import { useAuth } from '../context/AuthContext'; // Legacy context support if needed or remove later
+
 import ProtectedRoute from '../utils/ProtectedRoute';
-import MainLayout from '../components/layout/MainLayout';
+import PublicRoute from '../utils/PublicRoute';
+import Layout from '../components/PageLayout/Layout';
 
 // Pages
 import SelectPortal from '../pages/auth/SelectPortal/SelectPortal';
 import Login from '../pages/auth/Login/Login';
 import Register from '../pages/auth/Register/Register';
 import ForgotPassword from '../pages/auth/ForgotPassword/ForgotPassword';
+import ResetPassword from '../pages/auth/ResetPassword/ResetPassword';
 import AnonymousComplaint from '../pages/complaints/AnonymousComplaint';
 
 // Dashboard Portals
@@ -29,21 +31,42 @@ const Unauthorized = () => (
 );
 
 const AppRoutes = () => {
-    // We can use Redux state now for auth checks or keep using the Context wrapper if we want
-    // For this step, I'm integrating the NEW routes but keeping the ProtectedRoute logic tied to Context 
-    // to avoid breaking the entire app's auth guard unless we refactor ProtectedRoute too.
-    // Ideally, ProtectedRoute should be updated to read from Redux store.
-
     return (
         <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Navigate to="/select-portal" replace />} />
-            <Route path="/select-portal" element={<SelectPortal />} />
+            {/* Public Routes - Wrapped in PublicRoute to redirect if already logged in */}
+            <Route path="/" element={
+                <PublicRoute>
+                    <Navigate to="/select-portal" replace />
+                </PublicRoute>
+            } />
+
+            <Route path="/select-portal" element={
+                <PublicRoute>
+                    <SelectPortal />
+                </PublicRoute>
+            } />
 
             {/* Dynamic Role-based Auth Routes */}
-            <Route path="/login/:role" element={<Login />} />
-            <Route path="/register/:role" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/login/:role" element={
+                <PublicRoute>
+                    <Login />
+                </PublicRoute>
+            } />
+            <Route path="/register/:role" element={
+                <PublicRoute>
+                    <Register />
+                </PublicRoute>
+            } />
+            <Route path="/forgot-password/:role" element={
+                <PublicRoute>
+                    <ForgotPassword />
+                </PublicRoute>
+            } />
+            <Route path="/reset-password/:token" element={
+                <PublicRoute>
+                    <ResetPassword />
+                </PublicRoute>
+            } />
 
             <Route path="/anonymous-complaint" element={<AnonymousComplaint />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
@@ -53,12 +76,12 @@ const AppRoutes = () => {
                 path="/super-admin/*"
                 element={
                     <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
-                        <MainLayout>
+                        <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<SuperAdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/super-admin/dashboard" replace />} />
                             </Routes>
-                        </MainLayout>
+                        </Layout>
                     </ProtectedRoute>
                 }
             />
@@ -68,12 +91,12 @@ const AppRoutes = () => {
                 path="/mess-admin/*"
                 element={
                     <ProtectedRoute allowedRoles={['mess_admin']}>
-                        <MainLayout>
+                        <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<MessAdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/mess-admin/dashboard" replace />} />
                             </Routes>
-                        </MainLayout>
+                        </Layout>
                     </ProtectedRoute>
                 }
             />
@@ -83,12 +106,12 @@ const AppRoutes = () => {
                 path="/hostel-admin/*"
                 element={
                     <ProtectedRoute allowedRoles={['hostel_admin']}>
-                        <MainLayout>
+                        <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<HostelAdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/hostel-admin/dashboard" replace />} />
                             </Routes>
-                        </MainLayout>
+                        </Layout>
                     </ProtectedRoute>
                 }
             />
@@ -98,12 +121,12 @@ const AppRoutes = () => {
                 path="/student/*"
                 element={
                     <ProtectedRoute allowedRoles={['student']}>
-                        <MainLayout>
+                        <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<StudentDashboard />} />
                                 <Route path="*" element={<Navigate to="/student/dashboard" replace />} />
                             </Routes>
-                        </MainLayout>
+                        </Layout>
                     </ProtectedRoute>
                 }
             />
@@ -113,12 +136,12 @@ const AppRoutes = () => {
                 path="/warden/*"
                 element={
                     <ProtectedRoute allowedRoles={['warden']}>
-                        <MainLayout>
+                        <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<HostelAdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/warden/dashboard" replace />} />
                             </Routes>
-                        </MainLayout>
+                        </Layout>
                     </ProtectedRoute>
                 }
             />
@@ -127,12 +150,12 @@ const AppRoutes = () => {
                 path="/admin/*"
                 element={
                     <ProtectedRoute allowedRoles={['admin', 'super_admin']}>
-                        <MainLayout>
+                        <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<SuperAdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                             </Routes>
-                        </MainLayout>
+                        </Layout>
                     </ProtectedRoute>
                 }
             />

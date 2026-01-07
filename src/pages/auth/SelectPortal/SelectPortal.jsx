@@ -1,17 +1,24 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaUserGraduate, FaUniversity, FaBuilding, FaUtensils, FaArrowRight } from 'react-icons/fa';
 import './SelectPortal.scss';
+import logoIcon from '../../../assets/images/logoIcon.png';
 
-// We can import icons if available, for now using emojis or divs
-const PortalCard = ({ title, role, description, color, onClick }) => (
-    <div className="portal-card" onClick={onClick} style={{ borderColor: color }}>
-        <div className="icon-circle" style={{ backgroundColor: color }}>
-            {/* Placeholder icon */}
-            <span role="img" aria-label={title}>👤</span>
+const PortalCard = ({ title, role, description, icon: Icon, color, onClick }) => (
+    <div className="portal-card" onClick={onClick} role="button" tabIndex={0}>
+        <div className="card-content">
+            <div className="icon-wrapper" style={{ background: `${color}15`, color: color }}>
+                <Icon size={24} />
+            </div>
+            <div className="text-content">
+                <h3>{title}</h3>
+                <p>{description}</p>
+            </div>
+            <div className="arrow-icon" style={{ color: color }}>
+                <FaArrowRight />
+            </div>
         </div>
-        <h3>{title}</h3>
-        <p>{description}</p>
-        <button className="enter-btn" style={{ color: color }}>Enter Portal →</button>
+        <div className="card-border" style={{ background: color }}></div>
     </div>
 );
 
@@ -20,27 +27,31 @@ const SelectPortal = () => {
 
     const portals = [
         {
-            title: 'Student',
+            title: 'Student Portal',
             role: 'student',
-            description: 'Log complaints, view mess menu, and manage your profile.',
-            color: '#3b82f6', // Blue
+            description: 'Access your profile, mess menu, and lodge complaints.',
+            icon: FaUserGraduate,
+            color: '#3b82f6', // Bright Blue
         },
         {
-            title: 'College Admin',
+            title: 'Super Admin',
             role: 'super-admin',
-            description: 'Manage entire system, analytics, and university compliance.',
-            color: '#8b5cf6', // Purple
+            description: 'Oversee college operations, analytics, and staff.',
+            icon: FaUniversity,
+            color: '#7c3aed', // Violet
         },
         {
             title: 'Hostel Admin',
             role: 'hostel-admin',
-            description: 'Manage rooms, wardens, and daily hostel operations.',
+            description: 'Manage rooms, student allocation, and wardens.',
+            icon: FaBuilding,
             color: '#f59e0b', // Amber
         },
         {
             title: 'Mess Admin',
             role: 'mess-admin',
-            description: 'Update menus, track food inventory, and ratings.',
+            description: 'Update food menus, inventory, and feedback.',
+            icon: FaUtensils,
             color: '#10b981', // Emerald
         }
     ];
@@ -50,26 +61,37 @@ const SelectPortal = () => {
     };
 
     return (
-        <div className="portal-container">
-            <div className="portal-header">
-                <h1>Welcome to Hostel Management</h1>
-                <p>Please select your role to continue</p>
-            </div>
+        <div className="select-portal-page">
+            <div className="background-pattern"></div>
 
-            <div className="portal-grid">
-                {portals.map((portal) => (
-                    <PortalCard
-                        key={portal.role}
-                        {...portal}
-                        onClick={() => handlePortalSelect(portal.role)}
-                    />
-                ))}
-            </div>
+            <div className="content-container">
+                <header className="page-header">
+                    <div className="brand-logo">
+                        <img src={logoIcon} alt="CampusPulse" />
+                        <span>CampusPulse</span>
+                    </div>
+                    <h1>Select Your Portal</h1>
+                    <p>Choose the dashboard relevant to your role to proceed.</p>
+                </header>
 
-            <div className="footer-links">
-                <a href="#">Need Help?</a>
-                <span className="separator">•</span>
-                <a href="#">Privacy Policy</a>
+                <div className="portals-grid">
+                    {portals.map((portal) => (
+                        <PortalCard
+                            key={portal.role}
+                            {...portal}
+                            onClick={() => handlePortalSelect(portal.role)}
+                        />
+                    ))}
+                </div>
+
+                <footer className="page-footer">
+                    <p>© 2024 CampusPulse. All rights reserved.</p>
+                    <div className="links">
+                        <a href="#">Privacy Policy</a>
+                        <span>•</span>
+                        <a href="#">Support</a>
+                    </div>
+                </footer>
             </div>
         </div>
     );

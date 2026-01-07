@@ -7,6 +7,8 @@ import { clearState } from '../../../store/auth/authSlice';
 import AuthLayout from '../../../components/layout/AuthLayout';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 
+import CustomToast from '../../../components/CustomToast/CustomToast';
+
 const Login = () => {
     const { role } = useParams();
     const dispatch = useDispatch();
@@ -15,6 +17,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [toastState, setToastState] = useState({ show: false, message: '', type: 'error' });
 
     const loading = useSelector(selectAuthLoading);
     const error = useSelector(selectAuthError);
@@ -22,22 +25,14 @@ const Login = () => {
     const user = useSelector(selectUser);
 
     React.useEffect(() => {
-        if (isAuthenticated && user) {
-            const userRole = user.role;
-            switch (userRole) {
-                case 'student': navigate('/student/dashboard'); break;
-                case 'super_admin': navigate('/super-admin/dashboard'); break;
-                case 'hostel_admin': navigate('/hostel-admin/dashboard'); break;
-                case 'mess_admin': navigate('/mess-admin/dashboard'); break;
-                default: navigate('/');
-            }
+        if (error) {
+            setToastState({ show: true, message: error, type: 'error' });
+            dispatch(clearState());
         }
-        return () => { dispatch(clearState()); }
-    }, [isAuthenticated, user, navigate, dispatch]);
+    }, [error, dispatch]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Login with email, password AND role to ensure correct portal access
         dispatch(loginUser({ email, password, role }));
     };
 
@@ -55,8 +50,15 @@ const Login = () => {
         <AuthLayout
             title="Welcome Back!"
             subtitle={`Sign in to access your ${getPortalTitle()} dashboard.`}
+            role={role}
         >
-            {error && <div className="error-message">{error}</div>}
+            {toastState.show && (
+                <CustomToast
+                    message={toastState.message}
+                    type={toastState.type}
+                    onClose={() => setToastState({ ...toastState, show: false })}
+                />
+            )}
 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -97,7 +99,7 @@ const Login = () => {
                 </div>
 
                 <div className="form-actions" style={{ textAlign: 'right', marginBottom: '1.5rem', marginTop: '-0.5rem' }}>
-                    <Link to="/forgot-password" style={{ color: '#0f4c3a', fontWeight: '500', fontSize: '0.9rem' }}>Forgot Password?</Link>
+                    <Link to={`/forgot-password/${role}`} style={{ color: '#0f4c3a', fontWeight: '500', fontSize: '0.9rem' }}>Forgot Password?</Link>
                 </div>
 
                 <button type="submit" className="btn-login" disabled={loading}>

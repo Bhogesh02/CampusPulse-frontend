@@ -1,0 +1,125 @@
+@import '../../assets/styles/App.css';
+
+$navbar-height: 70px;
+$bg-white: #ffffff;
+$border-color: #e2e8f0;
+
+.navbar {
+    height: $navbar-height;
+    background-color: $bg-white;
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; // Push content to right
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+
+    .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .user-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-top: 2px;
+        }
+    }
+
+    .profile-dropdown {
+        position: relative;
+        cursor: pointer;
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 1.25rem;
+            transition: all 0.2s;
+
+            &:hover {
+                background: #cbd5e1;
+            }
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 120%;
+            right: 0;
+            width: 200px;
+            background: white;
+            border: 1px solid $border-color;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            display: none;
+            flex-direction: column;
+
+            &.show {
+                display: flex;
+            }
+
+            .dropdown-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 0.75rem 1rem;
+                color: #475569;
+                text-decoration: none;
+                border-radius: 6px;
+                transition: background 0.2s;
+                font-size: 0.9rem;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+
+                &:hover {
+                    background: #f8fafc;
+                    color: #1e293b;
+                }
+
+                &.danger {
+                    color: #ef4444;
+
+                    &:hover {
+                        background: #fef2f2;
+                    }
+                }
+            }
+
+            .divider {
+                height: 1px;
+                background: $border-color;
+                margin: 0.5rem 0;
+            }
+        }
+    }
+}

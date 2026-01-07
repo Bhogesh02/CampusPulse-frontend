@@ -4,7 +4,8 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../store/auth/authSelectors';
 import { chatbotAPI } from '../../services/api';
 import { toast } from 'react-toastify';
 import './Chatbot.css';
@@ -20,7 +21,7 @@ const FloatingChatbot = () => {
   const [inputMessage, setInputMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const { user } = useAuth();
+  const user = useSelector(selectUser);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

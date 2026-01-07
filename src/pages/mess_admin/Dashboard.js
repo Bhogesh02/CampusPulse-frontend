@@ -1,161 +1,121 @@
-/**
- * Mess Admin Dashboard
- * View only Mess-related complaints (student identity hidden)
- */
-
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { complaintsAPI } from '../../services/api';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../../store/auth/authSelectors';
 import { toast } from 'react-toastify';
-import '../../assets/styles/Dashboard.css';
+import { FiMessageSquare, FiAlertCircle, FiCheckCircle, FiClock } from 'react-icons/fi';
+import '../../assets/styles/DashboardCommons.scss';
+
+const StatCard = ({ title, value, icon: Icon, color }) => (
+  <div className="stat-card">
+    <div className="content">
+      <p>{title}</p>
+      <h3>{value}</h3>
+    </div>
+    <div className={`icon-box ${color}`}>
+      <Icon />
+    </div>
+  </div>
+);
 
 const MessAdminDashboard = () => {
-  const { user } = useAuth();
+  const user = useSelector(selectUser);
+  const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(true);
-  const [complaints, setComplaints] = useState([]);
-  const [stats, setStats] = useState({
-    total: 0,
-    pending: 0,
-    inProgress: 0,
-    resolved: 0,
-    critical: 0
-  });
+
+  // Mock Stats
+  const stats = {
+    total: 24,
+    pending: 5,
+    resolved: 19,
+    critical: 2
+  };
 
   useEffect(() => {
-    loadComplaints();
+    setLoading(false);
   }, []);
 
-  const loadComplaints = async () => {
-    try {
-      setLoading(true);
-      const response = await complaintsAPI.getAll();
-      setComplaints(response.data);
-
-      // Calculate stats
-      setStats({
-        total: response.data.length,
-        pending: response.data.filter(c => c.status === 'pending').length,
-        inProgress: response.data.filter(c => c.status === 'in_progress').length,
-        resolved: response.data.filter(c => c.status === 'resolved').length,
-        critical: response.data.filter(c => c.severity === 'critical').length
-      });
-    } catch (error) {
-      toast.error('Failed to load complaints');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleStatusUpdate = async (id, status) => {
-    try {
-      await complaintsAPI.update(id, { status });
-      setComplaints(complaints.map(c => c.id === id ? { ...c, status } : c));
-      toast.success('Complaint status updated');
-      loadComplaints();
-    } catch (error) {
-      toast.error('Failed to update complaint');
-    }
-  };
-
-  if (loading) {
-    return <div className="loading"><div className="spinner"></div></div>;
-  }
-
   return (
-    <div className="dashboard">
-      <div className="dashboard-header">
-        <h1>🍽️ Mess Admin Dashboard</h1>
-        <p>Welcome, {user?.name} - Managing Mess Complaints</p>
-        <div className="admin-notice">
-          <strong>⚠️ Note:</strong> Student identities are hidden for privacy.
+    <div className="dashboard-container">
+      <div className="welcome-section">
+        <h1>Mess Admin Dashboard 🍽️</h1>
+        <p>Manage food quality and mess-related feedback.</p>
+        <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#ecfdf5', color: '#065f46', borderRadius: '8px', fontSize: '0.9rem', display: 'inline-block' }}>
+          🔒 <strong>Privacy Mode:</strong> Student identities are hidden in reports.
         </div>
       </div>
 
-      {/* Statistics */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <p>Total Complaints</p>
-          <h3>{stats.total}</h3>
+      {activeTab === 'overview' && (
+        <div className="stats-grid">
+          <StatCard title="Total Feedback" value={stats.total} icon={FiMessageSquare} color="blue" />
+          <StatCard title="Pending Review" value={stats.pending} icon={FiClock} color="orange" />
+          <StatCard title="Resolved" value={stats.resolved} icon={FiCheckCircle} color="green" />
+          <StatCard title="Critical Issues" value={stats.critical} icon={FiAlertCircle} color="red" />
         </div>
-        <div className="stat-card">
-          <p>Pending</p>
-          <h3>{stats.pending}</h3>
-        </div>
-        <div className="stat-card">
-          <p>In Progress</p>
-          <h3>{stats.inProgress}</h3>
-        </div>
-        <div className="stat-card">
-          <p>Critical Issues</p>
-          <h3>{stats.critical}</h3>
-        </div>
+      )}
+
+      <div className="dashboard-tabs">
+        {['overview', 'complaints', 'menu', 'inventory'].map(tab => (
+          <button
+            key={tab}
+            className={activeTab === tab ? 'active' : ''}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {/* Complaints Table */}
-      <div className="card">
-        <div className="card-header">Mess Complaints</div>
-        {complaints.length === 0 ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
-            <p>No mess complaints found.</p>
+      <div className="tab-content">
+        {activeTab === 'complaints' && (
+          <div className="content-card">
+            <div className="card-header">
+              <h2>Recent Mess Complaints</h2>
+            </div>
+            <div className="card-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Complaint ID</th>
+                    <th>Category</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { id: 101, category: "Food Quality", severity: "Medium", status: "Pending" },
+                    { id: 102, category: "Cleanliness", severity: "High", status: "Resolved" }
+                  ].map(c => (
+                    <tr key={c.id}>
+                      <td>#{c.id}</td>
+                      <td>{c.category}</td>
+                      <td><span className={`badge badge-${c.severity === 'High' ? 'danger' : 'info'}`}>{c.severity}</span></td>
+                      <td><span className={`badge badge-${c.status === 'Resolved' ? 'success' : 'warning'}`}>{c.status}</span></td>
+                      <td><button className="btn-primary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>View</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        ) : (
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Severity</th>
-                <th>Sentiment</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {complaints.map(complaint => (
-                <tr key={complaint.id}>
-                  <td>{complaint.id}</td>
-                  <td>{complaint.title}</td>
-                  <td>{complaint.category}</td>
-                  <td>
-                    <span className={`badge badge-${complaint.severity === 'critical' ? 'danger' : 'info'}`}>
-                      {complaint.severity || 'normal'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge badge-${complaint.sentiment === 'negative' ? 'danger' : complaint.sentiment === 'positive' ? 'success' : 'secondary'}`}>
-                      {complaint.sentiment || 'neutral'}
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`badge badge-${complaint.status === 'resolved' ? 'success' :
-                        complaint.status === 'in_progress' ? 'warning' : 'secondary'
-                      }`}>
-                      {complaint.status}
-                    </span>
-                  </td>
-                  <td>{new Date(complaint.createdAt).toLocaleDateString()}</td>
-                  <td>
-                    <select
-                      value={complaint.status}
-                      onChange={(e) => handleStatusUpdate(complaint.id, e.target.value)}
-                      className="form-control"
-                      style={{ width: 'auto', display: 'inline-block', minWidth: '140px' }}
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="in_progress">In Progress</option>
-                      <option value="resolved">Resolved</option>
-                    </select>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        )}
+
+        {/* Other tabs... */}
+        {activeTab === 'menu' && (
+          <div className="content-card">
+            <div className="card-header"><h2>Weekly Menu</h2></div>
+            <div className="card-body"><p>Menu management interface.</p></div>
+          </div>
+        )}
+
+        {activeTab === 'inventory' && (
+          <div className="content-card">
+            <div className="card-header"><h2>Mess Inventory</h2></div>
+            <div className="card-body"><p>Stock tracking interface.</p></div>
+          </div>
         )}
       </div>
-
-      {/* Complaint Details Modal could be added here */}
     </div>
   );
 };

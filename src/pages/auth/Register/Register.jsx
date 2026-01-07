@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
-    registerStudent, registerSuperAdmin, registerHostelAdmin, registerMessAdmin
+    registerStudent, registerSuperAdmin, registerHostelAdmin, registerMessAdmin, logoutUser
 } from '../../../store/auth/authActions';
 import { selectAuthLoading, selectAuthError, selectIsAuthenticated, selectUser } from '../../../store/auth/authSelectors';
 import { clearState } from '../../../store/auth/authSlice';
 import AuthLayout from '../../../components/layout/AuthLayout';
+import CustomToast from '../../../components/CustomToast/CustomToast';
+
 import { FiUser, FiMail, FiPhone, FiLock, FiEye, FiEyeOff, FiMapPin, FiHash, FiGrid } from 'react-icons/fi';
 import {
     validateEmail, validateMobile, validatePassword,
@@ -79,83 +81,71 @@ const Register = () => {
     const user = useSelector(selectUser);
 
     const [showPassword, setShowPassword] = useState(false);
-
-    // Local errors state
     const [formErrors, setFormErrors] = useState({});
+    const [toastState, setToastState] = useState({ show: false, message: '', type: 'success', title: '' });
+    const isJustRegistered = React.useRef(false);
 
     const [formData, setFormData] = useState({
         email: '', password: '', confirmPassword: '', mobile: '', firstName: '', lastName: '',
         studentId: '', collegeName: '', universityName: '', location: '', staffId: ''
     });
 
+    // Effect to show Redux errors in Toast
     React.useEffect(() => {
-        if (isAuthenticated && user) {
-            const userRole = user.role;
-            switch (userRole) {
-                case 'student': navigate('/student/dashboard'); break;
-                case 'super_admin': navigate('/super-admin/dashboard'); break;
-                case 'hostel_admin': navigate('/hostel-admin/dashboard'); break;
-                case 'mess_admin': navigate('/mess-admin/dashboard'); break;
-                default: navigate('/');
-            }
+        if (reduxError) {
+            setToastState({
+                show: true,
+                message: reduxError,
+                type: 'error',
+                title: 'Registration Failed'
+            });
+            dispatch(clearState()); // Clear it from store so it doesn't persist forever
         }
-        return () => { dispatch(clearState()); };
-    }, [isAuthenticated, user, navigate, dispatch]);
+    }, [reduxError, dispatch]);
 
+    // ... handleChange ...
     const handleChange = (e) => {
         const { name, value } = e.target;
-
         let newValue = value;
-
-        // Validations for Mobile: Only numbers, max 10 chars
         if (name === 'mobile') {
             newValue = value.replace(/\D/g, '').slice(0, 10);
         }
-
         setFormData({ ...formData, [name]: newValue });
-
-        // Clear error when user types
         if (formErrors[name]) {
             setFormErrors({ ...formErrors, [name]: null });
         }
     };
 
+    // ... validateForm ... (Keep existing validation logic)
     const validateForm = () => {
         const errors = {};
-
-        // Common Validations (Email, Mobile, Password apply to everyone)
         errors.email = validateEmail(formData.email);
         errors.mobile = validateMobile(formData.mobile);
         errors.password = validatePassword(formData.password);
         errors.confirmPassword = validateConfirmPassword(formData.password, formData.confirmPassword);
 
-        // Role Specific Validations
         if (role === 'super-admin') {
             errors.collegeName = validateRequired(formData.collegeName, 'College Name');
             errors.universityName = validateRequired(formData.universityName, 'University Name');
             errors.location = validateRequired(formData.location, 'Location');
         } else {
-            // All other roles (student, hostel-admin, mess-admin) require Name
             errors.firstName = validateRequired(formData.firstName, 'First Name');
             errors.lastName = validateRequired(formData.lastName, 'Last Name');
-
             if (role === 'student') {
                 errors.studentId = validateRequired(formData.studentId, 'Student ID');
                 errors.collegeName = validateRequired(formData.collegeName, 'College Name');
             } else {
-                // Staff (Hostel/Mess Admin)
                 errors.staffId = validateRequired(formData.staffId, 'Staff ID');
+                errors.collegeName = validateRequired(formData.collegeName, 'College Name');
             }
         }
-
-        // Clean up nulls
         Object.keys(errors).forEach(key => {
             if (errors[key] === null) delete errors[key];
         });
-
         return errors;
     };
 
+    // ... getPayload ... (Keep existing payload logic)
     const getPayload = () => {
         const baseData = {
             firstName: formData.firstName,
@@ -163,57 +153,74 @@ const Register = () => {
             email: formData.email,
             mobile: formData.mobile,
             password: formData.password,
-            role: role // Sending role as requested
+            role: role
         };
-
         if (role === 'student') {
-            return {
-                ...baseData,
-                studentId: formData.studentId,
-                collegeName: formData.collegeName
-            };
+            return { ...baseData, studentId: formData.studentId, collegeName: formData.collegeName };
         } else if (role === 'super-admin') {
             return {
-                // Super Admin specific mapping
-                collegeName: formData.collegeName,
-                universityName: formData.universityName,
-                email: formData.email,
-                mobile: formData.mobile,
-                location: formData.location,
-                password: formData.password,
-                role: 'super_admin' // Explicit backend role name
+                collegeName: formData.collegeName, universityName: formData.universityName,
+                email: formData.email, mobile: formData.mobile, location: formData.location,
+                password: formData.password, role: 'super_admin'
             };
         } else if (role === 'hostel-admin') {
-            return {
-                ...baseData,
-                staffId: formData.staffId,
-                role: 'hostel_admin'
-            };
+            return { ...baseData, staffId: formData.staffId, collegeName: formData.collegeName, role: 'hostel_admin' };
         } else if (role === 'mess-admin') {
-            return {
-                ...baseData,
-                staffId: formData.staffId,
-                role: 'mess_admin'
-            };
+            return { ...baseData, staffId: formData.staffId, collegeName: formData.collegeName, role: 'mess_admin' };
         }
         return {};
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
         const errors = validateForm();
         if (Object.keys(errors).length > 0) {
             setFormErrors(errors);
+            // Optional: Show toast for form validation errors too if desired
+            setToastState({
+                show: true,
+                message: "Please correct the highlighted errors.",
+                type: 'error',
+                title: 'Validation Error'
+            });
             return;
         }
 
         const data = getPayload();
+        isJustRegistered.current = true;
 
-        if (role === 'student') dispatch(registerStudent(data));
-        else if (role === 'super-admin') dispatch(registerSuperAdmin(data));
-        else if (role === 'hostel-admin') dispatch(registerHostelAdmin(data));
-        else if (role === 'mess-admin') dispatch(registerMessAdmin(data));
+        let action;
+        if (role === 'student') action = registerStudent(data);
+        else if (role === 'super-admin') action = registerSuperAdmin(data);
+        else if (role === 'hostel-admin') action = registerHostelAdmin(data);
+        else if (role === 'mess-admin') action = registerMessAdmin(data);
+
+        if (action) {
+            try {
+                await dispatch(action).unwrap();
+                setToastState({
+                    show: true,
+                    message: "Registration Successful! Redirecting...",
+                    type: 'success',
+                    title: 'Account Created'
+                });
+                setTimeout(() => {
+                    dispatch(clearState());
+                    dispatch(logoutUser()); // Force logout so login page doesn't auto-redirect to dashboard
+                    navigate(`/login/${role}`);
+                }, 2000);
+            } catch (err) {
+                // Error is handled by useEffect listening to reduxError, 
+                // BUT thunk .unwrap() throws error, so we can also set it here immediately for faster feedback
+                isJustRegistered.current = false;
+                setToastState({
+                    show: true,
+                    message: err.message || "Registration failed. Please try again.",
+                    type: 'error',
+                    title: 'Registration Failed'
+                });
+            }
+        }
     };
 
     const renderFields = () => {
@@ -292,6 +299,10 @@ const Register = () => {
                     label="Staff ID" name="staffId" placeholder="Staff/Employee ID" icon={FiHash}
                     value={formData.staffId} onChange={handleChange} error={formErrors.staffId}
                 />
+                <InputField
+                    label="College Name" name="collegeName" placeholder="Registered College Name" icon={FiGrid}
+                    value={formData.collegeName} onChange={handleChange} error={formErrors.collegeName}
+                />
             </>
         );
     };
@@ -300,11 +311,15 @@ const Register = () => {
         <AuthLayout
             title="Create Account"
             subtitle={`Join CampusPulse as a ${role?.replace('-', ' ')}`}
+            role={role}
         >
-            {(reduxError || (Object.keys(formErrors).length > 0 && !formErrors.mobile)) && (
-                <div className="error-message">
-                    {reduxError || "Please correct the errors below."}
-                </div>
+            {toastState.show && (
+                <CustomToast
+                    message={toastState.message}
+                    type={toastState.type}
+                    title={toastState.title}
+                    onClose={() => setToastState({ ...toastState, show: false })}
+                />
             )}
 
             <form onSubmit={handleSubmit} noValidate>
