@@ -1,0 +1,146 @@
+.anonymous-complaint-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.anonymous-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+  max-width: 800px;
+  width: 100%;
+}
+
+.anonymous-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.anonymous-header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 20px;
+}
+
+.warning-box {
+  background: rgba(255, 193, 7, 0.2);
+  border: 2px solid rgba(255, 193, 7, 0.5);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  color: white;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.back-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-5px);
+}
+
+.complaint-type-selection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 800px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.type-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.type-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.mess-card:hover {
+  border: 3px solid #f5576c;
+}
+
+.hostel-card:hover {
+  border: 3px solid #4facfe;
+}
+
+.type-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.type-card h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.type-card p {
+  color: #666;
+  font-size: 1rem;
+}
+
+.complaint-form-container {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.complaint-form {
+  text-align: left;
+}
+
+.anonymous-notice {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+.anonymous-notice p {
+  margin: 0;
+  color: #1976d2;
+  font-size: 0.9rem;
+}
+
+.back-to-login {
+  margin-top: 30px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .complaint-type-selection {
+    grid-template-columns: 1fr;
+  }
+
+  .complaint-form-container {
+    padding: 30px 20px;
+  }
+}
