@@ -19,29 +19,24 @@ import { selectUser } from '../../store/auth/authSelectors';
 const MENU_CONFIG = {
     'super_admin': [
         { label: 'Dashboard', path: '/super-admin/dashboard', icon: FiGrid },
-        { label: 'Complaints', path: '/super-admin/complaints', icon: FiAlertCircle },
-        { label: 'Feedback & Ratings', path: '/super-admin/feedback', icon: FiMessageSquare },
         { label: 'User Management', path: '/super-admin/users', icon: FiUsers },
-        { label: 'Analytics', path: '/super-admin/analytics', icon: FiBarChart2 },
-        { label: 'Reports', path: '/super-admin/reports', icon: FiPieChart },
-        { label: 'College Settings', path: '/super-admin/settings', icon: FiSettings },
+        { label: 'All Complaints', path: '/super-admin/complaints', icon: FiAlertCircle },
+        { label: 'Global Analytics', path: '/super-admin/analytics', icon: FiBarChart2 },
     ],
     'hostel_admin': [
         { label: 'Dashboard', path: '/hostel-admin/dashboard', icon: FiGrid },
-        { label: 'Complaints', path: '/hostel-admin/complaints', icon: FiAlertCircle },
-        { label: 'Trends', path: '/hostel-admin/trends', icon: FiTrendingUp },
+        { label: 'Hostel Complaints', path: '/hostel-admin/complaints', icon: FiAlertCircle },
+        { label: 'Resident Stats', path: '/hostel-admin/stats', icon: FiBarChart2 },
     ],
     'mess_admin': [
         { label: 'Dashboard', path: '/mess-admin/dashboard', icon: FiGrid },
-        { label: 'Complaints', path: '/mess-admin/complaints', icon: FiAlertCircle },
-        { label: 'Feedback', path: '/mess-admin/feedback', icon: FiMessageSquare },
-        { label: 'Trends', path: '/mess-admin/trends', icon: FiTrendingUp },
+        { label: 'Mess Complaints', path: '/mess-admin/complaints', icon: FiAlertCircle },
+        { label: 'Menu Manager', path: '/mess-admin/menu', icon: FiFileText },
     ],
     'student': [
         { label: 'Dashboard', path: '/student/dashboard', icon: FiGrid },
-        { label: 'Raise Complaint', path: '/student/complaint/new', icon: FiFileText },
+        { label: 'Mess Menu', path: '/student/mess-menu', icon: FiPieChart },
         { label: 'My Complaints', path: '/student/complaints', icon: FiAlertCircle },
-        { label: 'Feedback', path: '/student/feedback', icon: FiMessageSquare },
     ]
 };
 

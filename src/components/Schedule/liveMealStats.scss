@@ -1,0 +1,148 @@
+.live-meal-stats-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 24px;
+    border: 1px solid #eef2f6;
+    margin-bottom: 2rem;
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fdf2f2;
+            color: #ef4444;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 800;
+
+            .pulse {
+                width: 8px;
+                height: 8px;
+                background: #ef4444;
+                border-radius: 50%;
+                animation: pulse 1.5s infinite;
+            }
+        }
+    }
+
+    .meal-stats-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .meal-stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed #f1f5f9;
+
+        &:last-child {
+            border: none;
+        }
+
+        .meal-info {
+            display: flex;
+            flex-direction: column;
+
+            strong {
+                font-size: 0.938rem;
+                color: #1e293b;
+                color: #0f172a;
+            }
+
+            span {
+                font-size: 0.75rem;
+                color: #94a3b8;
+                font-weight: 600;
+            }
+        }
+
+        .preference-split {
+            display: flex;
+            gap: 12px;
+
+            .split-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-width: 60px;
+                padding: 6px;
+                border-radius: 12px;
+
+                .label {
+                    font-size: 0.625rem;
+                    font-weight: 800;
+                    margin-bottom: 2px;
+                }
+
+                .count {
+                    font-size: 1.125rem;
+                    font-weight: 800;
+                }
+
+                &.veg {
+                    background: #f0fdf4;
+                    color: #16a34a;
+                }
+
+                &.non-veg {
+                    background: #fef2f2;
+                    color: #ef4444;
+                }
+            }
+        }
+    }
+
+    .card-footer {
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.75rem;
+        color: #94a3b8;
+        font-weight: 600;
+
+        svg {
+            color: #f59e0b;
+            font-size: 1rem;
+        }
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+}

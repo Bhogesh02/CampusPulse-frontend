@@ -10,12 +10,44 @@ $border-color: #e2e8f0;
     border-bottom: 1px solid $border-color;
     display: flex;
     align-items: center;
-    justify-content: flex-end; // Push content to right
+    justify-content: space-between; // Space between breadcrumbs and user info
     padding: 0 2rem;
     position: sticky;
     top: 0;
     z-index: 900;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+
+    .navbar-left {
+        display: flex;
+        align-items: center;
+
+        .navbar-breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.938rem;
+            color: #64748b;
+
+            .org-name {
+                font-weight: 700;
+                color: #1e293b;
+                max-width: 250px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .separator {
+                font-size: 0.8rem;
+                opacity: 0.5;
+            }
+
+            .current-path {
+                color: #2563eb;
+                font-weight: 600;
+            }
+        }
+    }
 
     .navbar-right {
         display: flex;

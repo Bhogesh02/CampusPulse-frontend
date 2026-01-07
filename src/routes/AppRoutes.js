@@ -17,9 +17,17 @@ import AnonymousComplaint from '../pages/complaints/AnonymousComplaint';
 
 // Dashboard Portals
 import SuperAdminDashboard from '../pages/super_admin/Dashboard';
+import SuperAdminComplaints from '../pages/super_admin/SuperAdminComplaints';
 import HostelAdminDashboard from '../pages/hostel_admin/Dashboard';
+import HostelComplaints from '../pages/hostel_admin/HostelComplaints';
 import MessAdminDashboard from '../pages/mess_admin/Dashboard';
 import StudentDashboard from '../pages/student/Dashboard';
+import MessComplaints from '../pages/mess_admin/MessComplaints';
+import MenuManager from '../pages/mess_admin/MenuManager';
+import StudentMessMenu from '../pages/student/StudentMessMenu';
+import StudentComplaints from '../pages/student/StudentComplaints';
+import UserManagement from '../components/UserManagement/UserManagement';
+import Profile from '../pages/Profile/Profile';
 
 // Unauthorized Page Component
 const Unauthorized = () => (
@@ -79,6 +87,8 @@ const AppRoutes = () => {
                         <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<SuperAdminDashboard />} />
+                                <Route path="users" element={<UserManagement />} />
+                                <Route path="complaints" element={<SuperAdminComplaints />} />
                                 <Route path="*" element={<Navigate to="/super-admin/dashboard" replace />} />
                             </Routes>
                         </Layout>
@@ -94,6 +104,8 @@ const AppRoutes = () => {
                         <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<MessAdminDashboard />} />
+                                <Route path="complaints" element={<MessComplaints />} />
+                                <Route path="menu" element={<MenuManager />} />
                                 <Route path="*" element={<Navigate to="/mess-admin/dashboard" replace />} />
                             </Routes>
                         </Layout>
@@ -109,6 +121,7 @@ const AppRoutes = () => {
                         <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<HostelAdminDashboard />} />
+                                <Route path="complaints" element={<HostelComplaints />} />
                                 <Route path="*" element={<Navigate to="/hostel-admin/dashboard" replace />} />
                             </Routes>
                         </Layout>
@@ -124,6 +137,8 @@ const AppRoutes = () => {
                         <Layout>
                             <Routes>
                                 <Route path="dashboard" element={<StudentDashboard />} />
+                                <Route path="mess-menu" element={<StudentMessMenu />} />
+                                <Route path="complaints" element={<StudentComplaints />} />
                                 <Route path="*" element={<Navigate to="/student/dashboard" replace />} />
                             </Routes>
                         </Layout>
@@ -155,6 +170,18 @@ const AppRoutes = () => {
                                 <Route path="dashboard" element={<SuperAdminDashboard />} />
                                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
                             </Routes>
+                        </Layout>
+                    </ProtectedRoute>
+                }
+            />
+
+            {/* Shared Profile Route */}
+            <Route
+                path="/profile"
+                element={
+                    <ProtectedRoute allowedRoles={['super_admin', 'student', 'hostel_admin', 'mess_admin', 'warden', 'admin']}>
+                        <Layout>
+                            <Profile />
                         </Layout>
                     </ProtectedRoute>
                 }

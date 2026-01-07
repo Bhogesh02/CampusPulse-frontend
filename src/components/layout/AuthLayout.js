@@ -94,15 +94,6 @@ const AuthLayout = ({ children, title, subtitle, role }) => {
                         </div>
                     </div>
 
-                    <div className="partner-logos">
-                        <span>TRUSTED BY TOP INSTITUTIONS</span>
-                        <div className="logos-grid">
-                            <div className="logo-item"><FaDiscord /> <span>Discord</span></div>
-                            <div className="logo-item"><FaSlack /> <span>Slack</span></div>
-                            <div className="logo-item"><FaDropbox /> <span>Dropbox</span></div>
-                            <div className="logo-item"><FaIntercom /> <span>Intercom</span></div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

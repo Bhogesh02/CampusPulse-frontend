@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectUser } from '../../store/auth/authSelectors';
-import { toast } from 'react-toastify';
-import { FiMessageSquare, FiAlertCircle, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { FiHome, FiAlertCircle, FiCoffee, FiStar, FiPieChart, FiTrendingUp, FiCheckCircle } from 'react-icons/fi';
+import api from '../../store/api/axiosBase';
+import LiveMealStats from '../../components/Schedule/LiveMealStats';
 import '../../assets/styles/DashboardCommons.scss';
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
-  <div className="stat-card">
-    <div className="content">
-      <p>{title}</p>
-      <h3>{value}</h3>
+  <div className={`stat-card-v2 ${color}`}>
+    <div className="stat-content">
+      <span className="stat-label">{title}</span>
+      <h3 className="stat-value">{value}</h3>
     </div>
-    <div className={`icon-box ${color}`}>
+    <div className="stat-icon">
       <Icon />
     </div>
   </div>
@@ -19,102 +20,68 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
 
 const MessAdminDashboard = () => {
   const user = useSelector(selectUser);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(true);
-
-  // Mock Stats
-  const stats = {
-    total: 24,
-    pending: 5,
-    resolved: 19,
-    critical: 2
-  };
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const [stats, setStats] = useState({
+    avgRating: '4.5',
+    totalComplaints: '12',
+    solvedComplaints: '8',
+    todayFeedbacks: '42'
+  });
 
   return (
-    <div className="dashboard-container">
-      <div className="welcome-section">
-        <h1>Mess Admin Dashboard 🍽️</h1>
-        <p>Manage food quality and mess-related feedback.</p>
-        <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#ecfdf5', color: '#065f46', borderRadius: '8px', fontSize: '0.9rem', display: 'inline-block' }}>
-          🔒 <strong>Privacy Mode:</strong> Student identities are hidden in reports.
+    <div className="dashboard-v2">
+      <div className="welcome-section-v2">
+        <div className="welcome-text">
+          <h1>Mess Operations Overview 🍽️</h1>
+          <p>Monitor dining quality and manage your mess facility at {user?.collegeName}.</p>
         </div>
       </div>
 
-      {activeTab === 'overview' && (
-        <div className="stats-grid">
-          <StatCard title="Total Feedback" value={stats.total} icon={FiMessageSquare} color="blue" />
-          <StatCard title="Pending Review" value={stats.pending} icon={FiClock} color="orange" />
-          <StatCard title="Resolved" value={stats.resolved} icon={FiCheckCircle} color="green" />
-          <StatCard title="Critical Issues" value={stats.critical} icon={FiAlertCircle} color="red" />
-        </div>
-      )}
-
-      <div className="dashboard-tabs">
-        {['overview', 'complaints', 'menu', 'inventory'].map(tab => (
-          <button
-            key={tab}
-            className={activeTab === tab ? 'active' : ''}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
+      <div className="stats-row">
+        <StatCard title="Average Rating" value={stats.avgRating} icon={FiStar} color="orange" />
+        <StatCard title="Today's Feedbacks" value={stats.todayFeedbacks} icon={FiPieChart} color="blue" />
+        <StatCard title="Open Complaints" value={stats.totalComplaints} icon={FiAlertCircle} color="orange" />
+        <StatCard title="Resolved Issues" value={stats.solvedComplaints} icon={FiCheckCircle} color="green" />
       </div>
 
-      <div className="tab-content">
-        {activeTab === 'complaints' && (
-          <div className="content-card">
-            <div className="card-header">
-              <h2>Recent Mess Complaints</h2>
+      <div className="dashboard-main-grid">
+        <div className="primary-section">
+          <div className="announcements-section">
+            <h3>📈 Recent Feedback Trends</h3>
+            <div className="announcement-item">
+              <span className="time">Today</span>
+              <p>Lunch (Veg Biryani) received high praise: Avg 4.8★</p>
             </div>
-            <div className="card-body">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Complaint ID</th>
-                    <th>Category</th>
-                    <th>Severity</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { id: 101, category: "Food Quality", severity: "Medium", status: "Pending" },
-                    { id: 102, category: "Cleanliness", severity: "High", status: "Resolved" }
-                  ].map(c => (
-                    <tr key={c.id}>
-                      <td>#{c.id}</td>
-                      <td>{c.category}</td>
-                      <td><span className={`badge badge-${c.severity === 'High' ? 'danger' : 'info'}`}>{c.severity}</span></td>
-                      <td><span className={`badge badge-${c.status === 'Resolved' ? 'success' : 'warning'}`}>{c.status}</span></td>
-                      <td><button className="btn-primary" style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem' }}>View</button></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="announcement-item">
+              <span className="time">Yesterday</span>
+              <p>Breakfast delay reported by multiple students. Action taken: Staff meeting scheduled.</p>
+            </div>
+            <div className="announcement-item">
+              <span className="time">2 days ago</span>
+              <p>New Vendor for vegetables started delivery. Quality check passed.</p>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Other tabs... */}
-        {activeTab === 'menu' && (
-          <div className="content-card">
-            <div className="card-header"><h2>Weekly Menu</h2></div>
-            <div className="card-body"><p>Menu management interface.</p></div>
+        <div className="secondary-section">
+          <LiveMealStats />
+          <div className="quick-actions-card">
+            <h3>Management Actions</h3>
+            <div className="action-links">
+              <a href="/mess-admin/menu">Upload Next Week Menu</a>
+              <a href="/mess-admin/complaints">Review Pending Complaints</a>
+              <a href="/profile">Administrative Settings</a>
+            </div>
           </div>
-        )}
 
-        {activeTab === 'inventory' && (
-          <div className="content-card">
-            <div className="card-header"><h2>Mess Inventory</h2></div>
-            <div className="card-body"><p>Stock tracking interface.</p></div>
+          <div className="info-card">
+            <h3>Inventory Alerts</h3>
+            <ul style={{ padding: '0', listStyle: 'none' }}>
+              <li style={{ color: '#ef4444', fontWeight: '600' }}>⚠️ Rice stock below 15%</li>
+              <li style={{ color: '#64748b' }}>• Gas cylinders replenishment due: Friday</li>
+              <li style={{ color: '#64748b' }}>• Deep cleaning scheduled for Sunday</li>
+            </ul>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

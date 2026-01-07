@@ -14,23 +14,23 @@ import {
     validateEmail, validateMobile, validatePassword,
     validateRequired, validateConfirmPassword
 } from '../../../utils/validation/validators';
+import api from '../../../store/api/axiosBase';
+import { useSearchParams } from 'react-router-dom';
 
-// Enhanced InputField with Validation Support
-const InputField = ({ label, name, type = "text", icon: Icon, placeholder, value, onChange, error }) => (
+// Enhanced InputField with Validation Support and Prop support
+const InputField = ({ label, name, type = "text", icon: Icon, placeholder, value, onChange, error, ...props }) => (
     <div className="form-group">
         <label>{label}</label>
         <div className={`input-wrapper ${error ? 'has-error' : ''}`}>
-
-            {/* Special handling for Mobile Number to show +91 prefix visually */}
             {name === 'mobile' ? (
                 <>
                     <FiPhone className="field-icon" style={{ zIndex: 5 }} />
                     <span className="prefix-span" style={{
                         position: 'absolute',
-                        left: '48px', // Starts exactly where icon padding ends
+                        left: '48px',
                         top: '50%',
                         transform: 'translateY(-50%)',
-                        color: '#111827', // Darker color to match user input
+                        color: '#111827',
                         fontWeight: '500',
                         fontSize: '0.95rem',
                         zIndex: 3,
@@ -45,10 +45,11 @@ const InputField = ({ label, name, type = "text", icon: Icon, placeholder, value
                         value={value || ''}
                         onChange={onChange}
                         className="input-with-icon input-mobile"
-                        style={{ paddingLeft: '82px' }} // Verified spacing for +91
+                        style={{ paddingLeft: '82px' }}
                         placeholder="9876543210"
                         maxLength={10}
                         required
+                        disabled={props.disabled}
                     />
                 </>
             ) : (
@@ -62,6 +63,7 @@ const InputField = ({ label, name, type = "text", icon: Icon, placeholder, value
                         className={Icon ? "input-with-icon" : ""}
                         placeholder={placeholder}
                         required
+                        disabled={props.disabled}
                     />
                 </>
             )}
@@ -89,6 +91,46 @@ const Register = () => {
         email: '', password: '', confirmPassword: '', mobile: '', firstName: '', lastName: '',
         studentId: '', collegeName: '', universityName: '', location: '', staffId: ''
     });
+
+    const [searchParams] = useSearchParams();
+    const [isInvited, setIsInvited] = useState(false);
+    const [isVerifying, setIsVerifying] = useState(false);
+
+    // Token verification on mount
+    React.useEffect(() => {
+        const token = searchParams.get('token');
+        if (token && role !== 'super-admin') { // Super Admin doesn't need invite (self-registered)
+            verifyToken(token);
+        }
+    }, [searchParams, role]);
+
+    const verifyToken = async (token) => {
+        setIsVerifying(true);
+        try {
+            const response = await api.get(`/invites/verify?token=${token}`);
+            const { email, collegeName } = response.data;
+            setFormData(prev => ({
+                ...prev,
+                email,
+                collegeName
+            }));
+            setIsInvited(true);
+            setToastState({
+                show: true,
+                message: "Invitation verified! Please complete your details.",
+                type: 'success'
+            });
+        } catch (error) {
+            setToastState({
+                show: true,
+                message: error.response?.data?.message || "Invalid or expired invitation token.",
+                type: 'error',
+                title: "Verification Failed"
+            });
+        } finally {
+            setIsVerifying(false);
+        }
+    };
 
     // Effect to show Redux errors in Toast
     React.useEffect(() => {
@@ -156,7 +198,7 @@ const Register = () => {
             role: role
         };
         if (role === 'student') {
-            return { ...baseData, studentId: formData.studentId, collegeName: formData.collegeName };
+            return { ...baseData, studentId: formData.studentId, collegeName: formData.collegeName, token: searchParams.get('token') };
         } else if (role === 'super-admin') {
             return {
                 collegeName: formData.collegeName, universityName: formData.universityName,
@@ -164,9 +206,9 @@ const Register = () => {
                 password: formData.password, role: 'super_admin'
             };
         } else if (role === 'hostel-admin') {
-            return { ...baseData, staffId: formData.staffId, collegeName: formData.collegeName, role: 'hostel_admin' };
+            return { ...baseData, staffId: formData.staffId, collegeName: formData.collegeName, role: 'hostel_admin', token: searchParams.get('token') };
         } else if (role === 'mess-admin') {
-            return { ...baseData, staffId: formData.staffId, collegeName: formData.collegeName, role: 'mess_admin' };
+            return { ...baseData, staffId: formData.staffId, collegeName: formData.collegeName, role: 'mess_admin', token: searchParams.get('token') };
         }
         return {};
     };
@@ -243,6 +285,7 @@ const Register = () => {
                 <InputField
                     label="Email" name="email" type="email" placeholder="john@example.com" icon={FiMail}
                     value={formData.email} onChange={handleChange} error={formErrors.email}
+                    disabled={isInvited}
                 />
                 <InputField
                     label="Mobile Number" name="mobile" placeholder="XXXXXXXXXX" icon={FiPhone}
@@ -288,6 +331,7 @@ const Register = () => {
                     <InputField
                         label="College Name" name="collegeName" placeholder="Correct Registered College Name" icon={FiGrid}
                         value={formData.collegeName} onChange={handleChange} error={formErrors.collegeName}
+                        disabled={isInvited}
                     />
                 </>
             );
@@ -302,6 +346,7 @@ const Register = () => {
                 <InputField
                     label="College Name" name="collegeName" placeholder="Registered College Name" icon={FiGrid}
                     value={formData.collegeName} onChange={handleChange} error={formErrors.collegeName}
+                    disabled={isInvited}
                 />
             </>
         );

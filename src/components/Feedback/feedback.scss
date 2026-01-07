@@ -1,0 +1,161 @@
+.feedback-popup-overlay {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1100;
+    max-width: 400px;
+    width: 100%;
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.feedback-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    border: 1px solid #eef2f6;
+
+    .card-header {
+        margin-bottom: 1.5rem;
+
+        .meal-tag {
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        p {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+    }
+
+    .rating-section {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 1.5rem;
+
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+
+            &.active {
+                color: #f59e0b;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .comment-section {
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.938rem;
+            background: #f8fafc;
+            resize: none;
+            height: 80px;
+            margin-bottom: 1.5rem;
+
+            &:focus {
+                outline: none;
+                border-color: #2563eb;
+                background: white;
+            }
+        }
+    }
+
+    .popup-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .skip-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+
+            &:hover {
+                color: #64748b;
+            }
+        }
+
+        .submit-btn {
+            background: #0f172a;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+
+            &:hover {
+                background: #1e293b;
+            }
+        }
+    }
+}
+
+.feedback-success {
+    background: #0f172a;
+    color: white;
+    padding: 2rem;
+    border-radius: 24px;
+    text-align: center;
+
+    .success-icon {
+        font-size: 3rem;
+        color: #10b981;
+        margin-bottom: 1rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    p {
+        color: #94a3b8;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
